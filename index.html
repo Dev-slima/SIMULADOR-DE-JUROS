@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Simulador de Rendimentos | Calculadora de Juros Compostos</title>
+  <meta name="description" content="Simulador de rendimentos e investimentos com cálculo preciso de juros compostos, gráficos interativos e tabela de evolução patrimonial.">
+  <meta name="theme-color" content="#0f172a">
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <!-- Fundo com gradiente sutil decorativo -->
+  <div class="bg-decor" aria-hidden="true"></div>
+
+  <!-- Container Geral da Aplicação -->
+  <div class="app-container">
+
+    <!-- Cabeçalho Principal -->
+    <header class="header">
+      <div class="brand-badge">
+        <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>
+        <span>Planejamento Financeiro</span>
+      </div>
+      <h1 class="header-title">Simulador de <span>Rendimentos</span></h1>
+      <p class="header-subtitle">
+        Projete o crescimento do seu patrimônio com a força dos juros compostos e tome decisões financeiras inteligentes.
+      </p>
+    </header>
+
+    <!-- Grid Central: Formulário de Parâmetros e Painel de Resultados -->
+    <main class="main-grid">
+
+      <!-- Coluna da Esquerda: Formulário de Simulação -->
+      <section class="card" aria-labelledby="form-heading">
+        <div class="card-header">
+          <div class="card-title-group">
+            <div class="card-icon" aria-hidden="true">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 7h6m0 10v-3m-3 3h.01M9 17h.01M9 14h.01M12 14h.01M15 11h.01M12 11h.01M9 11h.01M7 21h10a2 2 0 002-2V5a2 2 0 00-2-2H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+              </svg>
+            </div>
+            <div>
+              <h2 id="form-heading" class="card-title">Parâmetros</h2>
+              <span class="card-description">Preencha os valores da sua aplicação</span>
+            </div>
+          </div>
+        </div>
+
+        <form id="calc-form" class="calc-form" novalidate>
+
+          <!-- Valor Inicial Aplicado -->
+          <div class="input-group">
+            <div class="label-row">
+              <label for="initial-amount" class="label-text">
+                Valor Inicial Aplicado
+              </label>
+            </div>
+            <div class="field-wrapper">
+              <span class="field-prefix" aria-hidden="true">R$</span>
+              <input type="text" id="initial-amount" name="initialAmount" class="field-input" inputmode="numeric" value="10.000,00" placeholder="0,00" required autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Aporte Mensal Opcional -->
+          <div class="input-group">
+            <div class="label-row">
+              <label for="monthly-amount" class="label-text">
+                Aporte Mensal Recorrente
+              </label>
+              <span class="optional-tag">Opcional</span>
+            </div>
+            <div class="field-wrapper">
+              <span class="field-prefix" aria-hidden="true">R$</span>
+              <input type="text" id="monthly-amount" name="monthlyAmount" class="field-input" inputmode="numeric" value="500,00" placeholder="0,00" autocomplete="off">
+            </div>
+          </div>
+
+          <!-- Taxa de Juros + Tipo de Taxa -->
+          <div class="input-group">
+            <div class="label-row">
+              <label for="interest-rate" class="label-text">
+                Taxa de Juros
+              </label>
+            </div>
+            <div class="field-select-wrapper">
+              <div class="field-wrapper">
+                <span class="field-prefix" aria-hidden="true">%</span>
+                <input type="text" id="interest-rate" name="interestRate" class="field-input" inputmode="decimal" value="12" placeholder="0,00" required autocomplete="off">
+              </div>
+              <label for="rate-type" class="sr-only">Tipo de Taxa de Juros</label>
+              <select id="rate-type" name="rateType" class="select-native">
+                <option value="annual" selected>Ao ano (% a.a.)</option>
+                <option value="monthly">Ao mês (% a.m.)</option>
+              </select>
+            </div>
+            <!-- Benchmarks Rápidos -->
+            <div class="rate-benchmarks" aria-label="Taxas de referência do mercado">
+              <button type="button" class="benchmark-chip" data-rate="6" data-type="annual">Poupança (~6% a.a.)</button>
+              <button type="button" class="benchmark-chip" data-rate="10.5" data-type="annual">CDI / Selic (~10,5% a.a.)</button>
+              <button type="button" class="benchmark-chip" data-rate="12" data-type="annual">Ações/FIIs (~12% a.a.)</button>
+            </div>
+          </div>
+
+          <!-- Período de Tempo + Unidade -->
+          <div class="input-group">
+            <div class="label-row">
+              <label for="period-time" class="label-text">
+                Período de Tempo
+              </label>
+            </div>
+            <div class="field-select-wrapper">
+              <div class="field-wrapper">
+                <input type="number" id="period-time" name="periodTime" class="field-input" min="1" max="100" value="5" placeholder="Ex: 5" required>
+              </div>
+              <label for="period-type" class="sr-only">Unidade do Período</label>
+              <select id="period-type" name="periodType" class="select-native">
+                <option value="years" selected>Anos</option>
+                <option value="months">Meses</option>
+              </select>
+            </div>
+            <!-- Atalhos de Prazo -->
+            <div class="quick-chips-row" aria-label="Atalhos de período">
+              <button type="button" class="chip-btn" data-period="1" data-unit="years">1 ano</button>
+              <button type="button" class="chip-btn" data-period="2" data-unit="years">2 anos</button>
+              <button type="button" class="chip-btn active" data-period="5" data-unit="years">5 anos</button>
+              <button type="button" class="chip-btn" data-period="10" data-unit="years">10 anos</button>
+              <button type="button" class="chip-btn" data-period="20" data-unit="years">20 anos</button>
+              <button type="button" class="chip-btn" data-period="30" data-unit="years">30 anos</button>
+            </div>
+          </div>
+
+          <!-- Botões de Ação -->
+          <div class="action-buttons">
+            <button type="submit" id="btn-calculate" class="btn btn-primary">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              <span>Calcular Rendimentos</span>
+            </button>
+            <button type="button" id="btn-clear" class="btn btn-secondary" title="Redefinir para valores padrões">
+              <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              <span>Limpar</span>
+            </button>
+          </div>
+
+        </form>
+      </section>
+
+      <!-- Coluna da Direita: Painel de Resultados Dinâmicos -->
+      <section class="results-panel" aria-labelledby="results-heading">
+        <h2 id="results-heading" class="sr-only">Resultados da Simulação</h2>
+
+        <!-- Cards com as 3 Métricas Principais -->
+        <div class="metrics-grid">
+
+          <!-- Card de Destaque: Valor Total Final -->
+          <div class="metric-card highlight">
+            <div class="metric-header">
+              <span class="metric-label">Valor Total Final</span>
+              <span id="badge-profitability" class="metric-badge">+0%</span>
+            </div>
+            <div id="out-total-final" class="metric-value">R$ 0,00</div>
+            <div id="sub-profitability" class="metric-sub">Capital inicial + aportes + juros</div>
+          </div>
+
+          <!-- Total Investido -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Total Investido</span>
+            </div>
+            <div id="out-total-invested" class="metric-value">R$ 0,00</div>
+            <div class="metric-sub">Capital próprio aplicado</div>
+          </div>
+
+          <!-- Total em Juros Ganhos -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-label">Total em Juros</span>
+            </div>
+            <div id="out-total-interest" class="metric-value success">R$ 0,00</div>
+            <div class="metric-sub">Rendimento acumulado</div>
+          </div>
+
+        </div>
+
+        <!-- Barra Comparativa de Proporção -->
+        <div class="proportion-box">
+          <div class="proportion-header">
+            <span>Composição do Patrimônio Final</span>
+          </div>
+          <div class="proportion-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-label="Proporção entre Investido e Juros">
+            <div id="bar-invested" class="bar-segment bar-invested" style="width: 50%;"></div>
+            <div id="bar-interest" class="bar-segment bar-interest" style="width: 50%;"></div>
+          </div>
+          <div class="proportion-legend">
+            <div class="legend-item">
+              <span class="legend-dot invested"></span>
+              <span>Total Investido: <strong id="pct-invested">50%</strong></span>
+            </div>
+            <div class="legend-item">
+              <span class="legend-dot interest"></span>
+              <span>Juros Compostos: <strong id="pct-interest">50%</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Gráfico Visual Interativo SVG (Evolução Patrimonial) -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <h3 class="chart-title">Evolução do Saldo ao Longo do Tempo</h3>
+            <div class="proportion-legend">
+              <div class="legend-item">
+                <span class="legend-dot invested"></span>
+                <span>Saldo Acumulado</span>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot" style="background-color: #94a3b8;"></span>
+                <span>Total Aportado</span>
+              </div>
+            </div>
+          </div>
+          <div class="chart-svg-container">
+            <div id="chart-container"></div>
+            <div id="chart-tooltip" class="chart-tooltip" role="tooltip"></div>
+          </div>
+        </div>
+
+      </section>
+
+    </main>
+
+    <!-- Seção Extra: Tabela de Evolução Detalhada -->
+    <section class="table-card" aria-labelledby="table-heading">
+      <div class="table-header-controls">
+        <div>
+          <h2 id="table-heading" class="card-title">Tabela de Evolução do Rendimento</h2>
+          <span class="card-description">Acompanhe a progressão detalhada do seu patrimônio</span>
+        </div>
+
+        <!-- Ações da Tabela: Pílulas de Alternância e Exportação -->
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
+          <div class="toggle-pills" role="tablist" aria-label="Filtro de Visualização da Tabela">
+            <button type="button" id="view-annual" class="pill-btn active" role="tab" aria-selected="true">
+              Visão Anual
+            </button>
+            <button type="button" id="view-monthly" class="pill-btn" role="tab" aria-selected="false">
+              Visão Mensal
+            </button>
+          </div>
+
+          <button type="button" id="btn-export-csv" class="btn-sm-action" title="Baixar dados em formato CSV">
+            <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+            <span>Exportar CSV</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabela com Scroll Suave e Header Fixo -->
+      <div class="table-responsive">
+        <table class="evolution-table">
+          <thead>
+            <tr>
+              <th id="col-period-name">Ano</th>
+              <th>Juros do Período</th>
+              <th>Total em Juros</th>
+              <th>Total Investido</th>
+              <th>Saldo Acumulado</th>
+            </tr>
+          </thead>
+          <tbody id="evolution-tbody">
+            <!-- Linhas geradas dinamicamente pelo JavaScript -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Rodapé Obrigatório -->
+  <footer class="footer">
+    <div class="footer-content">
+      <span>Todos os Direitos reservados Deivid de sousa lima<i class="fi fi-rs-handshake"></i></span>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+
+</html>

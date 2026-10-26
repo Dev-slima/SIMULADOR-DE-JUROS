@@ -1,0 +1,1008 @@
+/* ==========================================================================
+   SIMULADOR DE RENDIMENTOS (JUROS COMPOSTOS)
+   Estilização Moderna, Clean e Responsiva
+   ========================================================================== */
+
+:root {
+  /* Paleta de Cores - Tons de Azul Escuro, Branco e Cinza Claro */
+  --color-primary: #1d4ed8;
+  --color-primary-hover: #1e40af;
+  --color-primary-light: #eff6ff;
+  --color-primary-border: #bfdbfe;
+  
+  --color-navy-950: #0a0f1d;
+  --color-navy-900: #0f172a;
+  --color-navy-800: #1e293b;
+  --color-navy-700: #334155;
+  
+  --color-slate-500: #64748b;
+  --color-slate-400: #94a3b8;
+  --color-slate-300: #cbd5e1;
+  --color-slate-200: #e2e8f0;
+  --color-slate-100: #f1f5f9;
+  --color-slate-50: #f8fafc;
+  
+  --color-white: #ffffff;
+  --color-success: #059669;
+  --color-success-light: #ecfdf5;
+  --color-success-border: #a7f3d0;
+  
+  --color-purple: #7c3aed;
+  --color-purple-light: #f5f3ff;
+  
+  /* Sombras e Elevações */
+  --shadow-sm: 0 1px 2px 0 rgba(15, 23, 42, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(15, 23, 42, 0.08), 0 2px 4px -2px rgba(15, 23, 42, 0.05);
+  --shadow-lg: 0 10px 15px -3px rgba(15, 23, 42, 0.08), 0 4px 6px -4px rgba(15, 23, 42, 0.04);
+  --shadow-xl: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
+  --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.2);
+
+  /* Bordas e Raios */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-xl: 24px;
+  --radius-full: 9999px;
+
+  /* Tipografia */
+  --font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  --transition-fast: 0.18s cubic-bezier(0.4, 0, 0.2, 1);
+  --transition-normal: 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Reset Global e Normalização */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: var(--font-family);
+  background-color: var(--color-slate-50);
+  color: var(--color-navy-800);
+  line-height: 1.5;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Background Decorativo Sutil */
+.bg-decor {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: -1;
+  pointer-events: none;
+  background: 
+    radial-gradient(circle at 10% 15%, rgba(37, 99, 235, 0.05) 0%, transparent 45%),
+    radial-gradient(circle at 90% 85%, rgba(5, 150, 105, 0.04) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(241, 245, 249, 0.6) 0%, transparent 100%);
+}
+
+/* Layout Principal */
+.app-container {
+  width: 100%;
+  max-width: 1240px;
+  margin-inline: auto;
+  padding: 2rem 1.25rem 3.5rem;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+.header {
+  text-align: center;
+  max-width: 760px;
+  margin-inline: auto;
+  margin-block-end: 0.5rem;
+}
+
+.brand-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.95rem;
+  background-color: var(--color-primary-light);
+  border: 1px solid var(--color-primary-border);
+  border-radius: var(--radius-full);
+  color: var(--color-primary);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  margin-block-end: 1rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.brand-badge svg {
+  width: 16px;
+  height: 16px;
+}
+
+.header-title {
+  font-size: clamp(1.85rem, 4vw, 2.65rem);
+  font-weight: 800;
+  color: var(--color-navy-900);
+  line-height: 1.2;
+  letter-spacing: -0.025em;
+  margin-block-end: 0.75rem;
+}
+
+.header-title span {
+  background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.header-subtitle {
+  font-size: clamp(0.95rem, 1.8vw, 1.125rem);
+  color: var(--color-slate-500);
+  max-width: 600px;
+  margin-inline: auto;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   GRID PRINCIPAL (Calculadora + Resultados)
+   ========================================================================== */
+.main-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.75rem;
+}
+
+@media (min-width: 992px) {
+  .main-grid {
+    grid-template-columns: 460px 1fr;
+    align-items: start;
+  }
+}
+
+/* ==========================================================================
+   CARDS E CONTAINERS
+   ========================================================================== */
+.card {
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-md);
+  padding: 1.75rem;
+  transition: box-shadow var(--transition-normal), border-color var(--transition-normal);
+}
+
+.card:hover {
+  border-color: var(--color-slate-300);
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-block-end: 1.5rem;
+  padding-block-end: 1rem;
+  border-bottom: 1px solid var(--color-slate-100);
+}
+
+.card-title-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.card-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  background-color: var(--color-primary-light);
+  color: var(--color-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.card-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--color-navy-900);
+  letter-spacing: -0.015em;
+}
+
+.card-description {
+  font-size: 0.8125rem;
+  color: var(--color-slate-500);
+}
+
+/* ==========================================================================
+   FORMULÁRIO E INPUTS
+   ========================================================================== */
+.calc-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.label-text {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-navy-800);
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.optional-tag {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--color-slate-400);
+  background-color: var(--color-slate-100);
+  padding: 0.15rem 0.5rem;
+  border-radius: var(--radius-full);
+}
+
+/* Input Wrapper com Ícone ou Prefixo */
+.field-wrapper {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  background-color: var(--color-white);
+  border: 1.5px solid var(--color-slate-200);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+  overflow: hidden;
+}
+
+.field-wrapper:hover {
+  border-color: var(--color-slate-300);
+}
+
+.field-wrapper:focus-within {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.field-prefix {
+  display: flex;
+  align-items: center;
+  padding-inline: 0.95rem;
+  background-color: var(--color-slate-50);
+  border-right: 1.5px solid var(--color-slate-200);
+  color: var(--color-navy-700);
+  font-size: 0.875rem;
+  font-weight: 600;
+  user-select: none;
+}
+
+.field-input {
+  width: 100%;
+  border: none;
+  outline: none;
+  padding: 0.8rem 0.95rem;
+  font-family: inherit;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-navy-900);
+  background: transparent;
+  min-height: 48px;
+}
+
+.field-input::placeholder {
+  color: var(--color-slate-400);
+  font-weight: 400;
+}
+
+/* Campos Combinados (Taxa e Período com Select Embutido) */
+.field-select-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 135px;
+  gap: 0.5rem;
+}
+
+.select-native {
+  border: 1.5px solid var(--color-slate-200);
+  border-radius: var(--radius-md);
+  padding: 0.8rem 2.2rem 0.8rem 0.95rem;
+  font-family: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-navy-800);
+  background-color: var(--color-white);
+  cursor: pointer;
+  outline: none;
+  min-height: 48px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23475569'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 1rem;
+  transition: all var(--transition-fast);
+}
+
+.select-native:hover {
+  border-color: var(--color-slate-300);
+}
+
+.select-native:focus-visible {
+  border-color: var(--color-primary);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Botões de Ação */
+.action-buttons {
+  display: flex;
+  gap: 0.75rem;
+  margin-block-start: 0.75rem;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-family: inherit;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  padding: 0.875rem 1.5rem;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all var(--transition-fast);
+  min-height: 48px;
+  text-decoration: none;
+}
+
+.btn-primary {
+  flex: 1;
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
+  color: var(--color-white);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.28);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(37, 99, 235, 0.38);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+}
+
+.btn-primary:focus-visible {
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.35);
+}
+
+.btn-secondary {
+  background-color: var(--color-slate-100);
+  color: var(--color-navy-700);
+  border: 1px solid var(--color-slate-200);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-slate-200);
+  color: var(--color-navy-900);
+}
+
+.btn-secondary:focus-visible {
+  box-shadow: 0 0 0 3px rgba(100, 116, 139, 0.25);
+}
+
+.btn svg {
+  width: 18px;
+  height: 18px;
+  transition: transform var(--transition-fast);
+}
+
+.btn-primary:hover svg {
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   PAINEL DE RESULTADOS
+   ========================================================================== */
+.results-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Cards Métricas em Destaque */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 640px) {
+  .metrics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.metric-card {
+  background: var(--color-white);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem;
+  border: 1px solid var(--color-slate-200);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-fast);
+}
+
+.metric-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.metric-card.highlight {
+  background: linear-gradient(145deg, #0f172a 0%, #1e293b 100%);
+  color: var(--color-white);
+  border-color: #334155;
+  box-shadow: var(--shadow-lg);
+}
+
+.metric-card.highlight .metric-label {
+  color: var(--color-slate-300);
+}
+
+.metric-card.highlight .metric-value {
+  color: #60a5fa;
+}
+
+.metric-card.highlight .metric-sub {
+  color: #94a3b8;
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.metric-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-slate-500);
+}
+
+.metric-badge {
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.2rem 0.5rem;
+  border-radius: var(--radius-full);
+  background-color: var(--color-success-light);
+  color: var(--color-success);
+}
+
+.metric-value {
+  font-size: clamp(1.35rem, 2.5vw, 1.75rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  color: var(--color-navy-900);
+}
+
+.metric-value.success {
+  color: var(--color-success);
+}
+
+.metric-sub {
+  font-size: 0.75rem;
+  color: var(--color-slate-500);
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+/* Barra de Proporção Visual */
+.proportion-box {
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-lg);
+  padding: 1.25rem 1.5rem;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.proportion-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-navy-800);
+}
+
+.proportion-bar-container {
+  width: 100%;
+  height: 14px;
+  background-color: var(--color-slate-100);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+  display: flex;
+}
+
+.bar-segment {
+  height: 100%;
+  transition: width 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.bar-invested {
+  background: #3b82f6;
+}
+
+.bar-interest {
+  background: #10b981;
+}
+
+.proportion-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  font-size: 0.8125rem;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+  color: var(--color-navy-700);
+  font-weight: 500;
+}
+
+.legend-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+}
+
+.legend-dot.invested {
+  background-color: #3b82f6;
+}
+
+.legend-dot.interest {
+  background-color: #10b981;
+}
+
+/* ==========================================================================
+   GRÁFICO INTERATIVO SVG
+   ========================================================================== */
+.chart-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.chart-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.chart-title {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--color-navy-900);
+}
+
+.chart-svg-container {
+  width: 100%;
+  position: relative;
+  overflow: visible;
+}
+
+.chart-svg {
+  width: 100%;
+  height: 240px;
+  overflow: visible;
+  display: block;
+}
+
+.chart-tooltip {
+  position: absolute;
+  background-color: var(--color-navy-900);
+  color: var(--color-white);
+  padding: 0.5rem 0.75rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  pointer-events: none;
+  opacity: 0;
+  transform: translate(-50%, -120%);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  white-space: nowrap;
+  box-shadow: var(--shadow-lg);
+  z-index: 10;
+}
+
+.chart-tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 5px solid transparent;
+  border-top-color: var(--color-navy-900);
+}
+
+/* ==========================================================================
+   TABELA DE EVOLUÇÃO (EXTRA)
+   ========================================================================== */
+.table-card {
+  background: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-xl);
+  padding: 1.5rem;
+  box-shadow: var(--shadow-md);
+  margin-block-start: 1.5rem;
+}
+
+.table-header-controls {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-block-end: 1.25rem;
+}
+
+.toggle-pills {
+  display: inline-flex;
+  background-color: var(--color-slate-100);
+  padding: 0.25rem;
+  border-radius: var(--radius-md);
+  gap: 0.25rem;
+}
+
+.pill-btn {
+  background: transparent;
+  border: none;
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-slate-500);
+  padding: 0.45rem 0.95rem;
+  border-radius: calc(var(--radius-md) - 2px);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.pill-btn:hover {
+  color: var(--color-navy-900);
+}
+
+.pill-btn.active {
+  background-color: var(--color-white);
+  color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
+}
+
+.table-responsive {
+  width: 100%;
+  max-height: 420px;
+  overflow-y: auto;
+  overflow-x: auto;
+  border: 1px solid var(--color-slate-200);
+  border-radius: var(--radius-md);
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-slate-300) transparent;
+}
+
+.table-responsive::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background-color: var(--color-slate-300);
+  border-radius: 4px;
+}
+
+.evolution-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  text-align: left;
+  font-size: 0.875rem;
+}
+
+.evolution-table thead {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background-color: var(--color-slate-100);
+}
+
+.evolution-table th {
+  padding: 0.85rem 1rem;
+  font-weight: 700;
+  color: var(--color-navy-900);
+  border-bottom: 2px solid var(--color-slate-200);
+  white-space: nowrap;
+}
+
+.evolution-table td {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--color-slate-100);
+  color: var(--color-navy-700);
+  white-space: nowrap;
+}
+
+.evolution-table tbody tr:nth-child(even) {
+  background-color: #fafbfc;
+}
+
+.evolution-table tbody tr:hover {
+  background-color: var(--color-primary-light);
+}
+
+.evolution-table td.val-positive {
+  color: var(--color-success);
+  font-weight: 600;
+}
+
+.evolution-table td.val-bold {
+  font-weight: 700;
+  color: var(--color-navy-900);
+}
+
+/* ==========================================================================
+   RODAPÉ OBRIGATÓRIO
+   ========================================================================== */
+.footer {
+  margin-top: auto;
+  width: 100%;
+  background-color: var(--color-white);
+  border-top: 1px solid var(--color-slate-200);
+  padding: 1.5rem 1rem;
+  text-align: center;
+  box-shadow: 0 -2px 10px rgba(15, 23, 42, 0.02);
+}
+
+.footer-content {
+  max-width: 1240px;
+  margin-inline: auto;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--color-slate-500);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.footer-author {
+  font-weight: 700;
+  color: var(--color-navy-900);
+}
+
+/* ==========================================================================
+   FEEDBACK E ACESSIBILIDADE
+   ========================================================================== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes pulseValue {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+}
+
+.value-updated {
+  animation: pulseValue 0.35s ease-out;
+}
+
+/* Chips Rápidos de Atalho (Prazos e Benchmarks) */
+.quick-chips-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.chip-btn {
+  background-color: var(--color-slate-100);
+  border: 1px solid var(--color-slate-200);
+  color: var(--color-navy-700);
+  font-family: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.chip-btn:hover {
+  background-color: var(--color-primary-light);
+  border-color: var(--color-primary-border);
+  color: var(--color-primary);
+}
+
+.chip-btn.active {
+  background-color: var(--color-primary);
+  border-color: var(--color-primary);
+  color: var(--color-white);
+}
+
+.chip-btn:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 1px;
+}
+
+.rate-benchmarks {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin-top: 0.4rem;
+}
+
+.benchmark-chip {
+  background-color: #f8fafc;
+  border: 1px dashed var(--color-slate-300);
+  color: var(--color-slate-500);
+  font-family: inherit;
+  font-size: 0.72rem;
+  font-weight: 500;
+  padding: 0.2rem 0.55rem;
+  border-radius: var(--radius-full);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.benchmark-chip:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background-color: var(--color-primary-light);
+}
+
+/* Botão de Exportação CSV */
+.btn-sm-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background-color: var(--color-white);
+  border: 1px solid var(--color-slate-200);
+  color: var(--color-navy-700);
+  font-family: inherit;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.45rem 0.85rem;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.btn-sm-action:hover {
+  border-color: var(--color-slate-300);
+  background-color: var(--color-slate-50);
+  color: var(--color-navy-900);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-sm-action svg {
+  width: 15px;
+  height: 15px;
+  color: var(--color-primary);
+}
+
+/* Responsividade adicional para celulares compactos */
+@media (max-width: 480px) {
+  .app-container {
+    padding-inline: 0.85rem;
+    padding-block-start: 1.25rem;
+  }
+  
+  .card {
+    padding: 1.25rem;
+  }
+  
+  .field-select-wrapper {
+    grid-template-columns: 1fr;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .btn-secondary {
+    order: 2;
+  }
+
+  .table-header-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+/* Estilos de Impressão (Relatório Limpo) */
+@media print {
+  body {
+    background-color: #fff;
+    color: #000;
+  }
+
+  .bg-decor,
+  .action-buttons,
+  .quick-chips-row,
+  .rate-benchmarks,
+  .toggle-pills,
+  .btn-sm-action {
+    display: none !important;
+  }
+
+  .app-container {
+    padding: 0;
+    max-width: 100%;
+  }
+
+  .card,
+  .metric-card,
+  .chart-card,
+  .table-card {
+    box-shadow: none !important;
+    border: 1px solid #ccc !important;
+    page-break-inside: avoid;
+  }
+
+  .table-responsive {
+    max-height: none !important;
+    overflow: visible !important;
+  }
+}
+
